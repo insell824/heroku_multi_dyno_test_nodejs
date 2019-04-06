@@ -20,6 +20,14 @@
       </div>
     </div>
   </script>
+  <script type="text/template" id="counter-template">
+    <div class='mt2 mb1'>Waiting: {{waiting}}, </div>
+    <div class='mt2 mb1'>Active: {{active}}, </div>
+    <div class='mt2 mb1'>Completed: {{completed}}, </div>
+    <div class='mt2 mb1'>Failed: {{failed}}, </div>
+    <div class='mt2 mb1'>Delayed: {{delayed}}, </div>
+    <div class='mt2 mb1'>Paused: {{paused}}, </div>
+  </script>
   <div class="main-content flex flex-column justify-center items-center w-100 mt4">
     <div class='br2 flex flex-column items-center pv3'>
       <div class='f1 mt2 mb1'>Create long-running jobs</div>
@@ -28,6 +36,7 @@
         <a href='#' id="clear" class='f2 link purple ph2 pv1 ba b--purple br1'>Clear</a>
       </div>
     </div>
+    <div class='br2 flex flex-column items-left w-80 pv3' id="counter-summary"></div>
     <div id="job-summary" class="w-80 f3"></div>
     <div class="h6 flex flex-column justify-end">
       <div class="shadow-3 pa4 tc f3">

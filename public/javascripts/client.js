@@ -1,11 +1,19 @@
 // Store for all of the jobs in progress
 let jobs = {};
+let counts = { 
+  waiting: 0,
+  active: 0,
+  completed: 0,
+  failed: 0,
+  delayed: 0,
+  paused: 0
+};
 
 // Kick off a new job by POST-ing to the server
 async function addJob() {
-  let res = await fetch('/job', {method: 'POST'});
+  let res = await fetch('/job', { method: 'POST' });
   let job = await res.json();
-  jobs[job.id] = {id: job.id, state: "queued"};
+  jobs[job.id] = { id: job.id, state: "queued" };
   render();
 }
 
@@ -20,10 +28,48 @@ async function updateJobs() {
     render();
   }
 }
+async function updateJobsOneSend() {
+  var obj = { ids:[] };
+  for (let id of Object.keys(jobs)) {
+    if(jobs[id].state == 'completed' || jobs[id].state == 'failed'){
+      // ignore
+    }else{
+      obj.ids.push(id);
+    }
+  }
+  if(obj.ids.length > 0){
+    const method = "POST";
+    const headers = {
+      'Accept': 'application/json',
+      'Content-Type': 'application/json'
+    };
+    let res = await fetch("/jobs", { method, headers, body:JSON.stringify(obj) });
+    let result = await res.json();
+    for(let item of result.body){
+      if (!!jobs[item.id]) {
+        jobs[item.id] = item;
+      }
+    }
+    counts = result.counts;
+    render();
+    setTimeout(updateJobsOneSend,200);
+  }else{
+    setTimeout(updateJobsOneSend,800);
+  }
+}
 
 // Delete all stored jobs
 function clear() {
-  jobs = {};
+  var newJobs = {};
+  for (let id of Object.keys(jobs)) {
+    if(jobs[id].state == 'completed' || jobs[id].state == 'failed'){
+      // ignore
+    }else{
+      newJobs[id] = { id, state: jobs[id].state };
+    }
+  }
+  jobs = newJobs;
+  //jobs = {};
   render();
 }
 
@@ -38,6 +84,16 @@ function render() {
   // which is very inefficient. In a production app a library like React or Vue should
   // handle this work
   document.querySelector("#job-summary").innerHTML = s;
+
+  document.querySelector("#counter-summary").innerHTML = 
+    document.querySelector("#counter-template")
+    .innerHTML
+    .replace('{{waiting}}', counts.waiting)
+    .replace('{{active}}', counts.active)
+    .replace('{{completed}}', counts.completed)
+    .replace('{{failed}}', counts.failed)
+    .replace('{{delayed}}', counts.delayed)
+    .replace('{{paused}}', counts.paused);
 }
 
 // Renders the HTML for each job object
@@ -52,7 +108,7 @@ function renderJob(job) {
     color = "bg-dark-red";
     progress = 100;
   }
-  
+
   return document.querySelector('#job-template')
     .innerHTML
     .replace('{{id}}', job.id)
@@ -62,9 +118,9 @@ function renderJob(job) {
 }
 
 // Attach click handlers and kick off background processes
-window.onload = function() {
+window.onload = function () {
   document.querySelector("#add-job").addEventListener("click", addJob);
   document.querySelector("#clear").addEventListener("click", clear);
-
-  setInterval(updateJobs, 200);
+  setTimeout(updateJobsOneSend,200);
+  //setInterval(updateJobsOneSend, 200);
 };

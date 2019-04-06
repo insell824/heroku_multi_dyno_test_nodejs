@@ -62,9 +62,44 @@ router.get('/job/:id', async (req, res) => {
   }
 });
 
+router.post('/jobs', (req, res) => {
+  let ids = req.body.ids;
+  if (ids == null || !Array.isArray(ids)) {
+    res.status(404).end();
+    return;
+  }
+  var resResult = {
+    counts : { 
+      waiting: 0,
+      active: 0,
+      completed: 0,
+      failed: 0,
+      delayed: 0,
+      paused: 0
+    },
+    body: []
+  };
+  async function run() {
+    resResult.counts = await workQueue.getJobCounts();
+    for (var i = 0; i < ids.length; i++) {
+      let job = await workQueue.getJob(ids[i]);
+      if (job !== null) {
+        let state = await job.getState();
+        let progress = job._progress;
+        let reason = job.failedReason;
+        resResult.body.push({ id: ids[i], state, progress, reason });
+      }
+    }
+  }
+  run().then(() => {
+    res.json(resResult);
+  });
+});
+
+
 // You can listen to global events to get notified when jobs are processed
 workQueue.on('global:completed', (jobId, result) => {
-  console.log(`Job completed with result ${result}`);
+  console.log(`Job ${jobId} is completed with result ${result}`);
 });
 
 module.exports = router;
