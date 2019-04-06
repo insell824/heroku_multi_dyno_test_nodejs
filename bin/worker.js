@@ -14,6 +14,8 @@ let workers = process.env.WEB_CONCURRENCY || 2;
 // to be much lower.
 let maxJobsPerWorker = 2;
 
+console.log('WEB_CONCURRENCY',workers);
+
 function sleep(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
 }
@@ -23,7 +25,7 @@ function start() {
   let workQueue = new Queue('work', REDIS_URL);
 
   workQueue.process(maxJobsPerWorker, async (job) => {
-    console.log(job.id);
+    console.log('JOB ID:',job.id);
     // This is an example job that just slowly reports on progress
     // while doing no work. Replace this with your own job logic.
     let progress = 0;
