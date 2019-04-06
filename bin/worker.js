@@ -12,7 +12,7 @@ let workers = process.env.WEB_CONCURRENCY || 2;
 // to be tuned for your application. If each job is mostly waiting on network 
 // responses it can be much higher. If each job is CPU-intensive, it might need
 // to be much lower.
-let maxJobsPerWorker = 2;
+let maxJobsPerWorker = 50;
 
 console.log('WEB_CONCURRENCY',workers);
 
