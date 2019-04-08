@@ -1,0 +1,98 @@
+<div class="row mt-3">
+  <div class="col-12">
+    <div class="card h2 bg-white p-3 mb-1">
+      <%=title%>
+    </div>
+  </div>
+  <!-- .col-12 -->
+</div>
+<!-- .row -->
+
+<div id="vue-app">
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          Overview
+        </div>
+        <div class="card-body">
+          <div class="row">
+            <template v-for="activity in overviewActivity">
+              <div class="col-sm-4 col-lg-2">
+                <div :class="activity.cardClass">
+                  <div class="card-body">
+                    <div v-show="activity.showIcon" v-html="activity.icon"></div>
+                    <div class="text-value">{{activity.number}}</div>
+                    <div>{{activity.title}}</div>
+                  </div>
+                </div>
+              </div>
+            </template>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          Last {{restNum}} Completed
+        </div>
+        <div class="card-body">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th scope="col">Job ID</th>
+                <th scope="col">Internal Information</th>
+              </tr>
+            </thead>
+            <tbody>
+              <template v-for="item in lastUpdated">
+                <tr>
+                  <th scope="row">{{item.id}}</th>
+                  <td>{{(item.result&&item.result.inInfo)?item.result.inInfo:item.result}}</td>
+                </tr>
+              </template>
+              <template v-for="i in lastUpdatedRest">
+                <tr>
+                  <th colspan="2">-</th>
+                </tr>
+              </template>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">
+          Control Panel
+        </div>
+        <div class="card-body">
+          <button type="button" class="btn btn-primary" v-on:click="addJob(1)">Add high priority job(1)</button>
+          <button type="button" class="btn btn-primary" v-on:click="addJob(10)">Add low priority job(10)</button>
+          <button type="button" class="btn btn-light" v-on:click="clearCompleted()">Clear List</button>
+          <button type="button" class="btn btn-light" v-on:click="test()">SAMLPE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="row">
+    <template v-for="(item,index) in processing" :key="index">
+      <div class="col-2" v-show="item.isView">
+        <div class="card" :id="'card-'+index">
+          <div class="card-body p-2">
+            {{index}}
+            <div class="progress" style="height:4px;">
+              <div :class="item.progressClass" role="progressbar"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </template>
+  </div>
+</div>
+<script src="/javascripts/bootClient.js"></script>

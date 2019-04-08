@@ -10,8 +10,8 @@ let counts = {
 };
 
 // Kick off a new job by POST-ing to the server
-async function addJob() {
-  let res = await fetch('/job', { method: 'POST' });
+async function addJob(priority) {
+  let res = await fetch('/job/'+priority, { method: 'POST' });
   let job = await res.json();
   jobs[job.id] = { id: job.id, state: "queued" };
   render();
@@ -37,7 +37,7 @@ async function updateJobsOneSend() {
       obj.ids.push(id);
     }
   }
-  if(obj.ids.length > 0){
+  
     const method = "POST";
     const headers = {
       'Accept': 'application/json',
@@ -52,6 +52,7 @@ async function updateJobsOneSend() {
     }
     counts = result.counts;
     render();
+  if(obj.ids.length > 0){
     setTimeout(updateJobsOneSend,200);
   }else{
     setTimeout(updateJobsOneSend,800);
@@ -114,12 +115,14 @@ function renderJob(job) {
     .replace('{{id}}', job.id)
     .replace('{{state}}', job.state)
     .replace('{{color}}', color)
-    .replace('{{progress}}', progress);
+    .replace('{{progress}}', progress)
+    .replace('{{priority}}', job.priority);
 }
 
 // Attach click handlers and kick off background processes
 window.onload = function () {
-  document.querySelector("#add-job").addEventListener("click", addJob);
+  document.querySelector("#add-job1").addEventListener("click", ()=>{addJob(1)});
+  document.querySelector("#add-job2").addEventListener("click", ()=>{addJob(10)});
   document.querySelector("#clear").addEventListener("click", clear);
   setTimeout(updateJobsOneSend,200);
   //setInterval(updateJobsOneSend, 200);

@@ -1,12 +1,13 @@
 #!/usr/bin/env node
-
 /**
  * Module dependencies.
  */
-
+require('dotenv').config();
+process.env.SITE_NAME = 'WORKER TEST';
 var app = require('../app');
 var debug = require('debug')('heroku-multi-dyno-test-nodejs:server');
 var http = require('http');
+var socketManager = require('../middleware/FrontSocketManager');
 
 /**
  * Get port from environment and store in Express.
@@ -28,6 +29,11 @@ var server = http.createServer(app);
 server.listen(port);
 server.on('error', onError);
 server.on('listening', onListening);
+
+/**
+ * Socket.io Initialize
+ */
+socketManager.init(server);
 
 /**
  * Normalize a port into a number, string, or false.

@@ -10,13 +10,17 @@
     "worker-local": "DEBUG=heroku-multi-dyno-test-nodejs:* nodemon ./bin/worker.js"
   },
   "dependencies": {
+    "bson": "^4.0.2",
     "bull": "^3.7.0",
     "cookie-parser": "~1.4.3",
     "debug": "~2.6.9",
+    "dotenv": "^7.0.0",
     "ejs": "~2.5.7",
+    "events": "^3.0.0",
     "express": "~4.16.0",
     "http-errors": "~1.6.2",
     "morgan": "~1.9.0",
+    "socket.io": "^2.2.0",
     "throng": "^4.0.0"
   },
   "devDependencies": {
