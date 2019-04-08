@@ -35,10 +35,10 @@ module.exports = function (cpuNumber){
         
       }
 
-      // throw an error 0.05% of the time
-      if (Math.random() < 0.05) {
+      // throw an error 0.02% of the time
+      if (Math.random() < 0.0002) {
         console.log("JOB ID:" + job.id + " is failed!");
-        //throw new Error("JOB ID:" + job.id + " is failed!")
+        throw new Error("JOB ID:" + job.id + " is failed!")
         //job.retry();
       }
       progress += 1;
